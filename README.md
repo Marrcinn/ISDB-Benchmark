@@ -43,7 +43,6 @@ The main benchmarking program that implements five different file reading strate
 
 - **Order-Independent Hashing**: Uses CRC64 with XOR operation to allow parallel processing while maintaining consistent results
 - **High-Resolution Timing**: Uses `clock_gettime()` for precise performance measurements
-- **Thread-Safe Operations**: Implements proper synchronization for multi-threaded processing
 - **Configurable Verbosity**: Three levels of output detail (times only, times+checksums, debug)
 
 ### Usage
@@ -57,10 +56,10 @@ The main benchmarking program that implements five different file reading strate
 ### Performance Metrics
 
 The program measures and reports:
-- Execution time for each reading method
-- CRC64 checksums for data integrity verification
-- Total bytes processed
-- Thread synchronization statistics (in debug mode)
+- Execution time for each reading method (v = 0)
+- CRC64 checksums for data integrity verification (v = 1)
+- Total bytes processed (v = 2)
+- Thread synchronization statistics (in debug mode) (v = 2)
 
 ---
 
@@ -68,29 +67,12 @@ The program measures and reports:
 
 A lightweight CRC64 implementation optimized for performance benchmarking.
 
-### Implementation Details
-
-- **Polynomial**: Uses ECMA-182 standard polynomial (`0x42F0E1EBA9EA3693`)
-- **Lookup Table**: Pre-computed 256-entry table for fast byte-by-byte processing
-- **Lazy Initialization**: Tables are computed only when first needed
-- **Memory Efficient**: Minimal memory footprint with static table storage
-
 ### API
 
 ```c
 void crc64_init(void);                                    // Initialize lookup tables
 uint64_t crc64_compute(const unsigned char *data, size_t len);  // Compute CRC64
 ```
-
-### Design Rationale
-
-The CRC64 implementation is designed for:
-- **Speed**: Table-driven approach for maximum performance
-- **Simplicity**: Minimal dependencies and straightforward API
-- **Reliability**: Well-tested ECMA-182 polynomial
-- **Order Independence**: When combined with XOR, allows parallel processing
-
----
 
 ## file_generation.py
 
@@ -102,7 +84,6 @@ A Python utility for generating test files with random data of specified sizes.
 - **Progress Tracking**: Real-time progress display for large files
 - **Efficient Generation**: Uses `os.urandom()` with 1MB buffers
 - **Duplicate Prevention**: Skips generation if file already exists
-- **Error Handling**: Comprehensive error checking and user feedback
 
 ### Usage
 
@@ -165,8 +146,7 @@ An automated benchmark runner that orchestrates the entire testing process.
 
 ### Features
 
-- **Automated Workflow**: Complete end-to-end testing process
-- **Multiple File Sizes**: Tests 1MB, 17MB, 1GB, 32GB, and 64GB files
+- **Multiple File Sizes**: Tests 1MB, 17MB, 1GB, 32GB, and 64GB files by default
 - **Timestamped Results**: Saves results with timestamps for historical tracking
 - **Dependency Checking**: Verifies required tools are available
 - **Progress Tracking**: Colored output with status indicators
@@ -236,6 +216,5 @@ The script checks for and requires:
 - **Memory**: Memory-mapped files for large file access
 - **Caching**: OS file system caching affects results
 
-## License
-
-This project is provided as-is for educational and benchmarking purposes.
+## Disclaimer:
+Code was created by Marcin Zaręba. Parts of code were created or modified using LLMs (mainly pretty (prettier) printing, argument parsing, run_benchmark.sh and this Readme file.)
